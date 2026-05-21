@@ -36,6 +36,7 @@ const ProductCard = ({
           fill
           sizes="(max-width: 240px)"
           className="object-contain transition-all duration-400 ease-out"
+          loading="eager"
         />
         <Image
           src={imgUrl[1]}

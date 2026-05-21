@@ -48,6 +48,7 @@ const Gallery = ({ images }: TProps) => {
             fill
             className="cursor-zoom-in object-contain rounded-xl border border-white transition-colors duration-300 hover:border-gray-300"
             sizes="(max-width:700px)"
+            loading="eager"
             onClick={() => setShowZoom(true)}
           />
         ) : (

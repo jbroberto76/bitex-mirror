@@ -107,8 +107,9 @@ async function main() {
             specialFeatures: { set: ["5G", "Fast charging", "Water resistant"] },
             images: {
                 set: [
-                    "/images/products/phone-1.png",
-                    "/images/products/phone-2.png",
+                    "/images/products/iphone1.jpg",
+                    "/images/products/iphone2.jpg",
+                    "/images/products/iphone3.jpg",
                 ]
             },
             category: { connect: { id: smartphonesCategory.id } },
@@ -137,8 +138,9 @@ async function main() {
             specialFeatures: { set: ["Lightweight", "Thunderbolt 4", "Retina-like display"] },
             images: {
                 set: [
-                    "/images/products/laptop-1.png",
-                    "/images/products/laptop-2.png",
+                    "/images/products/ipadAir1.jpg",
+                    "/images/products/ipadAir2.jpg",
+                    "/images/products/ipadAir3.jpg",
                 ]
             },
             category: { connect: { id: laptopsCategory.id } },
