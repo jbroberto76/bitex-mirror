@@ -119,11 +119,10 @@ export const getOneProduct = async (productID: string) => {
     });
     if (!result) return { error: "Invalid Data!" };
 
-    const specifications = await generateSpecTable(result.specs);
-    if (!specifications || specifications.length === 0) return { error: "Invalid Date" };
+    const specifications = (await generateSpecTable(result.specs)) || [];
 
-    const pathArray: TPath[] | null = await getPathByCategoryID(result.category.id, result.category.parentID);
-    if (!pathArray || pathArray.length === 0) return { error: "Invalid Date" };
+    let pathArray: TPath[] | null = await getPathByCategoryID(result.category.id, result.category.parentID);
+    if (!pathArray) pathArray = [];
 
     //eslint-disable-next-line
     const { specs, ...others } = result;
@@ -181,6 +180,7 @@ export const deleteProduct = async (productID: string) => {
 
 const generateSpecTable = async (rawSpec: ProductSpec[]) => {
   try {
+    if (!rawSpec || rawSpec.length === 0) return [];
     const specGroupIDs = rawSpec.map((spec) => spec.specGroupID);
 
     const result = await db.specGroup.findMany({
@@ -188,7 +188,7 @@ const generateSpecTable = async (rawSpec: ProductSpec[]) => {
         id: { in: specGroupIDs },
       },
     });
-    if (!result || result.length === 0) return null;
+    if (!result || result.length === 0) return [];
 
     const specifications: TSpecification[] = [];
 
@@ -197,31 +197,32 @@ const generateSpecTable = async (rawSpec: ProductSpec[]) => {
       const tempSpecs: { name: string; value: string }[] = [];
       spec.specValues.forEach((s, index) => {
         tempSpecs.push({
-          name: result[groupSpecIndex].specs[index] || "",
+          name: result[groupSpecIndex]?.specs[index] || "",
           value: s || "",
         });
       });
 
       specifications.push({
-        groupName: result[groupSpecIndex].title || "",
+        groupName: result[groupSpecIndex]?.title || "",
         specs: tempSpecs,
       });
     });
-    if (specifications.length === 0) return null;
 
     return specifications;
   } catch {
-    return null;
+    return [];
   }
 };
 
 const getPathByCategoryID = async (categoryID: string, parentID: string | null) => {
   try {
     if (!categoryID || categoryID === "") return null;
-    if (!parentID || parentID === "") return null;
+    const conditions: any[] = [{ id: categoryID }, { parentID: null }];
+    if (parentID) conditions.push({ id: parentID });
+
     const result: TPath[] = await db.category.findMany({
       where: {
-        OR: [{ id: categoryID }, { id: parentID }, { parentID: null }],
+        OR: conditions,
       },
       select: {
         id: true,
