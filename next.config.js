@@ -16,7 +16,7 @@ const nextConfig = {
     qualities: [75, 100],
   },
   env: {
-    IMG_URL: process.env.CLOUDINARY_URL,
+    IMG_URL: "",
   },
 };
 
